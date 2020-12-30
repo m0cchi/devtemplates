@@ -11,6 +11,10 @@ which direnv
 which python
 which pyenv
 
+function eval_template(){
+    bash -c "echo \"$(cat $1)\""
+}
+
 function mkpy_project() {
     cd "$INSTALL_DIR"
     name="$1"
@@ -52,40 +56,31 @@ function mk_django(){
     echo psycopg2 >> requirements-runtime.txt
     : > requirements-dev.txt
     echo psycopg2-binary >> requirements-dev.txt
+    ../venv/bin/pip install -r requirements-dev.txt
 }
 
 function injection_postgres_settings(){
     cd "${INSTALL_DIR}/${PROJECT_NAME}/${PROJECT_NAME}"
-    cat <<EOF >> "${PROJECT_NAME}/settings.py"
-
-import os
-
-DB_USER = os.environ.get('DB_USER', '$PROJECT_NAME')
-DB_PASSWORD = os.environ.get('DB_PASSWORD', '${PROJECT_NAME}0')
-DB_HOST = os.environ.get('DB_HOST', 'db')
-DB_PORT = int(os.environ.get('DB_PORT', '5432'))
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': '$PROJECT_NAME',
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSWORD,
-        'HOST': DB_HOST,
-        'PORT': DB_PORT,
-    }
+    echo "$T/django/core_models.py"
+    eval_template "$T/django/settings.py" >> "${PROJECT_NAME}/settings.py"
 }
 
-EOF
+function mk_core_app(){
+    echo "mk_core_app"
+    cd "${INSTALL_DIR}/${PROJECT_NAME}/${PROJECT_NAME}"
+    ../venv/bin/python manage.py startapp core
+    eval_template  "$T/django/core_models.py" >> "core/models.py"
 }
 
 
 mkpy_project "$PROJECT_NAME"
 mk_django
 injection_postgres_settings
+mk_core_app
+
+
 
 cp "$T/docker-compose.yml" .
 cp "$T/Dockerfile" .
 cp -r "$T/extra" extra
-
-# bash -c "echo \"$(cat '$T/docker-compose.yml')\"" > docker-compose.yml 
 
