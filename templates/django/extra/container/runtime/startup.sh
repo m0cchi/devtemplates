@@ -4,6 +4,7 @@ set -e
 cd $APP_DIR
 
 pip install -r requirements.txt
+pip install -r requirements-runtime.txt
 
 python /usr/local/extra/wait_for_tcp.py db 5432 180
 
