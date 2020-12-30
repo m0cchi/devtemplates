@@ -56,6 +56,9 @@ function mk_django(){
     echo psycopg2 >> requirements-runtime.txt
     : > requirements-dev.txt
     echo psycopg2-binary >> requirements-dev.txt
+    echo isort >> requirements-dev.txt
+    echo flake8 >> requirements-dev.txt
+    echo yapf >> requirements-dev.txt
     ../venv/bin/pip install -r requirements-dev.txt
 }
 
@@ -78,9 +81,9 @@ mk_django
 injection_postgres_settings
 mk_core_app
 
-
+cd "${INSTALL_DIR}/${PROJECT_NAME}/${PROJECT_NAME}"
 
 cp "$T/docker-compose.yml" .
 cp "$T/Dockerfile" .
 cp -r "$T/extra" extra
-
+cp "$T/style.yapf" .style.yapf
