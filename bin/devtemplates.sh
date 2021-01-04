@@ -9,7 +9,8 @@ COMMAND="$1"
 shift 1
 
 case $COMMAND in
-    django) bash $TEMPLATE_DIR/$COMMAND/make.sh $*
+    django|load-nodejs-project-path)
+        bash $TEMPLATE_DIR/$COMMAND/make.sh $*
              ;;
     *) echo 'nothing'
        ;;
