@@ -77,11 +77,20 @@ function mk_core_app(){
     echo -e "\nAUTH_USER_MODEL = 'core.User'\n" >> "${PROJECT_NAME}/settings.py"
 }
 
+function mk_ignore(){
+    cd "${INSTALL_DIR}/${PROJECT_NAME}/${PROJECT_NAME}"
+    cat <<EOF >> .gitignore
+*pyc
+*~
+EOF
+}
+
 
 mkpy_project "$PROJECT_NAME"
 mk_django
 injection_postgres_settings
 mk_core_app
+mk_ignore
 
 cd "${INSTALL_DIR}/${PROJECT_NAME}/${PROJECT_NAME}"
 
