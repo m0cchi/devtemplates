@@ -40,26 +40,29 @@ function mkpy_project() {
 source venv/bin/activate
 EOF
     direnv allow
-    venv/bin/python -m pip install --upgrade pip
+    source venv/bin/activate
+    python -m pip install --upgrade pip
+    python -m pip install poetry
 }
 
 function mk_django(){
     cd "${INSTALL_DIR}/${PROJECT_NAME}"
     echo 'mk_django'
     pwd
-    venv/bin/pip install django
-    venv/bin/django-admin startproject "$PROJECT_NAME"
+    pip install django
+    django-admin startproject "$PROJECT_NAME"
     cd "$PROJECT_NAME"
     echo "PROJECT_NAME=$PROJECT_NAME" > .env
-    ../venv/bin/pip freeze > requirements.txt
-    : > requirements-runtime.txt
-    echo psycopg2 >> requirements-runtime.txt
-    : > requirements-dev.txt
-    echo psycopg2-binary >> requirements-dev.txt
-    echo isort >> requirements-dev.txt
-    echo flake8 >> requirements-dev.txt
-    echo yapf >> requirements-dev.txt
-    ../venv/bin/pip install -r requirements-dev.txt
+    poetry init --name "$PROJECT_NAME" --description 'web application' \
+           --dependency django \
+           --dev-dependency  psycopg2-binary \
+           --dev-dependency  isort \
+           --dev-dependency  flake8 \
+           --dev-dependency  yapf \
+           $(:)
+
+    poetry add -E runtime psycopg2 # --lock --optional
+    poetry install
 }
 
 function injection_postgres_settings(){
@@ -71,7 +74,7 @@ function injection_postgres_settings(){
 function mk_core_app(){
     echo "mk_core_app"
     cd "${INSTALL_DIR}/${PROJECT_NAME}/${PROJECT_NAME}"
-    ../venv/bin/python manage.py startapp core
+    python manage.py startapp core
     eval_template  "$T/django/core_models.py" >> "core/models.py"
 }
 

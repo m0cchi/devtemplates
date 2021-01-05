@@ -2,9 +2,9 @@
 
 set -e
 cd $APP_DIR
-
-pip install -r requirements.txt
-pip install -r requirements-runtime.txt
+pip install poetry
+poetry install -E runtime
+poetry install
 
 python /usr/local/extra/wait_for_tcp.py db 5432 180
 
