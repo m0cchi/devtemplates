@@ -73,6 +73,8 @@ function mk_core_app(){
     cd "${INSTALL_DIR}/${PROJECT_NAME}/${PROJECT_NAME}"
     ../venv/bin/python manage.py startapp core
     eval_template  "$T/django/core_models.py" >> "core/models.py"
+    echo -e "\nINSTALLED_APPS.append('core.apps.CoreConfig')\n" >> "${PROJECT_NAME}/settings.py"
+    echo -e "\nAUTH_USER_MODEL = 'core.User'\n" >> "${PROJECT_NAME}/settings.py"
 }
 
 

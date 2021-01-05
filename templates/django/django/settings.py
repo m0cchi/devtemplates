@@ -3,7 +3,7 @@ import os
 
 DB_USER = os.environ.get('DB_USER', '$PROJECT_NAME')
 DB_PASSWORD = os.environ.get('DB_PASSWORD', '${PROJECT_NAME}0')
-DB_HOST = os.environ.get('DB_HOST', 'db')
+DB_HOST = os.environ.get('DB_HOST', '127.0.0.1')
 DB_PORT = int(os.environ.get('DB_PORT', '5432'))
 DATABASES = {
     'default': {
