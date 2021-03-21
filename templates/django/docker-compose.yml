@@ -8,6 +8,7 @@ services:
     working_dir: /usr/local/${PROJECT_NAME}
     environment:
       - APP_DIR=/usr/local/${PROJECT_NAME}
+      - DB_HOST=db
     command: bash /usr/local/extra/startup.sh
     ports:
       - "8080:8080"
