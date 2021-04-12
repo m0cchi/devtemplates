@@ -10,6 +10,5 @@ bash "$L/init.sh"
 
 python /usr/local/extra/wait_for_tcp.py db 5432 180
 
-python manage.py migrate
-python manage.py runserver 0.0.0.0:8080
+python manage.py makemigrations
 
